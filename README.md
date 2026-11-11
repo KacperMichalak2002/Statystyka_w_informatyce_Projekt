@@ -1,12 +1,12 @@
 # Football statistics 2025/26
 
-An interactive web application for exploring match statistics from the top five European football leagues in the 2025/26 season (Premier League, La Liga, Serie A, Bundesliga, Ligue 1). It shows how goals, shots, corners, fouls, cards and betting odds are distributed, how they relate to each other, and how leagues and teams compare — all through visual, picture-based charts.
+An interactive web application for exploring match statistics from the top five European football leagues in the 2025/26 season (Premier League, La Liga, Serie A, Bundesliga, Ligue 1). It shows how goals, shots, corners, fouls, cards and betting odds are distributed, how they relate to each other, and how leagues and teams compare, using visual, picture-based charts.
 
 Data source: [football-data.co.uk](https://www.football-data.co.uk/) (CSV files in `Data/`).
 
 ## Running locally
 
-Requirements: Python 3.10 or newer ([python.org](https://www.python.org/downloads/)).
+Requirements: Python 3.12 or newer ([python.org](https://www.python.org/downloads/)).
 
 ### Windows
 
