@@ -9,11 +9,13 @@ toolbarMode = "minimal"
 
 [theme]
 base = "dark"
-primaryColor = "#fac775"
-backgroundColor = "#0f2a12"
-secondaryBackgroundColor = "#173404"
-textColor = "#f1efe8"
-borderColor = "#2f5a1a"
-linkColor = "#fac775"
+primaryColor = "#4ade80"
+backgroundColor = "#121417"
+secondaryBackgroundColor = "#1e2228"
+textColor = "#f4f5f7"
+borderColor = "#2e343d"
+dataframeHeaderBackgroundColor = "#2a3038"
+dataframeHeaderTextColor = "#f4f5f7"
+linkColor = "#4ade80"
 baseRadius = "0.6rem"
-chartCategoricalColors = ["#f1efe8", "#fac775", "#9be15d", "#b8c7a8"]
+chartCategoricalColors = ["#f4f5f7", "#4ade80", "#fac775", "#a3abb7"]

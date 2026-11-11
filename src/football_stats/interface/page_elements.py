@@ -7,16 +7,29 @@ import streamlit as st
 from football_stats.interface.formatting import format_number
 from football_stats.interface.labels import LEAGUE_COUNTRIES
 from football_stats.interface.league_logos import league_logo_data_address
-from football_stats.interface.theme import LEAGUE_COLORS, MUTED_TEXT_COLOR, PANEL_BACKGROUND_COLOR, TEXT_COLOR
+from football_stats.interface.theme import (
+    BORDER_COLOR,
+    LEAGUE_COLORS,
+    MUTED_TEXT_COLOR,
+    PANEL_BACKGROUND_COLOR,
+    TEXT_COLOR,
+)
+
+CHART_CONFIGURATION = {"displayModeBar": False, "scrollZoom": False, "doubleClick": False}
 
 APPLICATION_STYLES = f"""
 <style>
+.league-cards {{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+    gap: 1rem;
+}}
 .league-card {{
     background: {PANEL_BACKGROUND_COLOR};
+    border: 1px solid {BORDER_COLOR};
     border-top: 4px solid var(--league-color);
     border-radius: 0.6rem;
     padding: 0.9rem 1rem;
-    min-height: 19.5rem;
 }}
 .league-card-header {{
     display: flex;
@@ -60,7 +73,7 @@ def apply_application_styles() -> None:
 
 
 def show_chart(figure: go.Figure) -> None:
-    st.plotly_chart(figure, theme=None, width="stretch")
+    st.plotly_chart(figure, theme=None, width="stretch", config=CHART_CONFIGURATION)
 
 
 def league_card_html(league: str, league_row: pd.Series) -> str:
@@ -87,3 +100,8 @@ def league_card_html(league: str, league_row: pd.Series) -> str:
         f'<div class="league-card-details">{details}</div>'
         f"{value_rows}</div>"
     )
+
+
+def league_cards_html(league_summary: pd.DataFrame) -> str:
+    cards = "".join(league_card_html(league, league_row) for league, league_row in league_summary.iterrows())
+    return f'<div class="league-cards">{cards}</div>'

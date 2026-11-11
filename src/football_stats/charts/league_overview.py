@@ -3,9 +3,12 @@ import plotly.graph_objects as go
 
 from football_stats.interface.formatting import format_number, whole_percentages_summing_to_hundred
 from football_stats.interface.labels import RESULT_NAMES
-from football_stats.interface.theme import LEAGUE_COLORS, PITCH_BACKGROUND_COLOR, RESULT_COLORS
+from football_stats.interface.theme import LEAGUE_COLORS, BACKGROUND_COLOR, RESULT_COLORS
 
-CHART_HEIGHT = 360
+CHART_HEIGHT = 460
+CHART_MARGIN = {"t": 50, "b": 140}
+PLOT_AREA_HEIGHT = CHART_HEIGHT - CHART_MARGIN["t"] - CHART_MARGIN["b"]
+LEGEND_DISTANCE_BELOW_PLOT = 74
 
 
 def goals_per_match_chart(league_summary: pd.DataFrame) -> go.Figure:
@@ -26,8 +29,8 @@ def goals_per_match_chart(league_summary: pd.DataFrame) -> go.Figure:
         title="Średnia liczba goli na mecz",
         xaxis={"title": "Gole na mecz", "range": [0, 1.15 * goals_per_match.max()]},
         yaxis={"autorange": "reversed"},
-        margin={"b": 70},
-        height=CHART_HEIGHT + 30,
+        margin=CHART_MARGIN,
+        height=CHART_HEIGHT,
     )
     return figure
 
@@ -50,7 +53,7 @@ def match_results_chart(league_summary: pd.DataFrame) -> go.Figure:
             text=[f"{value}%" for value in whole_percentages[column]],
             textposition="inside",
             insidetextanchor="middle",
-            textfont={"color": PITCH_BACKGROUND_COLOR},
+            textfont={"color": BACKGROUND_COLOR},
             hoverlabel={"bordercolor": RESULT_COLORS[result]},
             hovertemplate="<b>%{y}</b><br>" + result_name + ": %{x:.1f}%<extra></extra>",
         )
@@ -63,11 +66,12 @@ def match_results_chart(league_summary: pd.DataFrame) -> go.Figure:
             "orientation": "h",
             "x": 0.5,
             "xanchor": "center",
-            "y": -0.38,
+            "y": -LEGEND_DISTANCE_BELOW_PLOT / PLOT_AREA_HEIGHT,
             "yanchor": "top",
             "traceorder": "normal",
+            "font": {"size": 13},
         },
-        margin={"b": 70},
-        height=CHART_HEIGHT + 30,
+        margin=CHART_MARGIN,
+        height=CHART_HEIGHT,
     )
     return figure

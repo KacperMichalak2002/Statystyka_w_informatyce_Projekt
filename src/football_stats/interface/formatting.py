@@ -1,7 +1,9 @@
 import math
+from datetime import date
 
 NON_BREAKING_SPACE = " "
 MISSING_VALUE_TEXT = "brak"
+DATE_FORMAT = "%d.%m.%Y"
 
 
 def format_number(value: float, decimal_places: int = 0) -> str:
@@ -9,6 +11,10 @@ def format_number(value: float, decimal_places: int = 0) -> str:
         return MISSING_VALUE_TEXT
     english_format = f"{value:z,.{decimal_places}f}"
     return english_format.replace(",", NON_BREAKING_SPACE).replace(".", ",")
+
+
+def format_date(day: date) -> str:
+    return day.strftime(DATE_FORMAT)
 
 
 def format_percentage(value: float, decimal_places: int = 1) -> str:

@@ -12,6 +12,19 @@ RESULT_NAMES = {
     "away_win": "Wygrana gości",
 }
 
+MATCH_INFORMATION_NAMES = {
+    "date": "Data",
+    "league": "Liga",
+    "home_team": "Gospodarz",
+    "away_team": "Gość",
+    "result": "Wynik",
+}
+
+TEAM_INFORMATION_NAMES = {
+    "team": "Drużyna",
+    "league": "Liga",
+}
+
 MATCH_ATTRIBUTE_NAMES = {
     "home_goals": "Gole gospodarzy",
     "away_goals": "Gole gości",
