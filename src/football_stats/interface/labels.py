@@ -6,6 +6,12 @@ LEAGUE_COUNTRIES = {
     "Ligue 1": "Francja",
 }
 
+RESULT_NAMES = {
+    "home_win": "Wygrana gospodarzy",
+    "draw": "Remis",
+    "away_win": "Wygrana gości",
+}
+
 MATCH_ATTRIBUTE_NAMES = {
     "home_goals": "Gole gospodarzy",
     "away_goals": "Gole gości",

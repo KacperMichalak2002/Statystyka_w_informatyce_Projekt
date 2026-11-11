@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pandas as pd
 
-DATA_FOLDER = Path(__file__).resolve().parents[2] / "Data"
+DATA_FOLDER = Path(__file__).resolve().parents[3] / "Data"
 
 LEAGUE_FILES = {
     "E0.csv": "Premier League",

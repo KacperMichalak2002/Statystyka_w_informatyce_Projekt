@@ -1,0 +1,19 @@
+[server]
+showEmailPrompt = false
+
+[browser]
+gatherUsageStats = false
+
+[client]
+toolbarMode = "minimal"
+
+[theme]
+base = "dark"
+primaryColor = "#fac775"
+backgroundColor = "#0f2a12"
+secondaryBackgroundColor = "#173404"
+textColor = "#f1efe8"
+borderColor = "#2f5a1a"
+linkColor = "#fac775"
+baseRadius = "0.6rem"
+chartCategoricalColors = ["#f1efe8", "#fac775", "#9be15d", "#b8c7a8"]

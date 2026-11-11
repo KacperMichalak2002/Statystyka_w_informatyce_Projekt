@@ -1,5 +1,5 @@
 @echo off
-cd /d "%~dp0"
+cd /d "%~dp0.."
 
 if exist ".venv\Scripts\python.exe" (
     ".venv\Scripts\python.exe" -c "import sys; sys.exit(sys.version_info < (3, 12))" 2>nul || (
