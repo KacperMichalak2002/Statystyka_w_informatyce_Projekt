@@ -6,6 +6,8 @@ LEAGUE_COUNTRIES = {
     "Ligue 1": "Francja",
 }
 
+ALL_LEAGUES_NAME = "Wszystkie ligi"
+
 RESULT_NAMES = {
     "home_win": "Wygrana gospodarzy",
     "draw": "Remis",

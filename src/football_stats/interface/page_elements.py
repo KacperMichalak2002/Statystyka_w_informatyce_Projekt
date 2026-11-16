@@ -64,6 +64,44 @@ APPLICATION_STYLES = f"""
     font-weight: 600;
     margin-bottom: 0.5rem;
 }}
+.pictogram {{
+    display: grid;
+    gap: 0.5rem;
+}}
+.pictogram-row {{
+    display: grid;
+    grid-template-columns: 9rem 1fr 7rem;
+    align-items: center;
+    gap: 1rem;
+    background: {PANEL_BACKGROUND_COLOR};
+    border: 1px solid {BORDER_COLOR};
+    border-left: 4px solid var(--league-color);
+    border-radius: 0.6rem;
+    padding: 0.5rem 1rem;
+}}
+.pictogram-label {{
+    font-weight: 600;
+}}
+.pictogram-icons {{
+    font-size: 1.4rem;
+    line-height: 1.5;
+    min-height: 1.5em;
+}}
+.pictogram-icon {{
+    display: inline-block;
+    width: 1.3em;
+    text-align: center;
+}}
+.pictogram-icon-part {{
+    display: inline-block;
+    overflow: hidden;
+    white-space: nowrap;
+    vertical-align: bottom;
+}}
+.pictogram-value {{
+    font-weight: 600;
+    text-align: right;
+}}
 </style>
 """
 
