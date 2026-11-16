@@ -62,16 +62,24 @@ def numeric_attributes(level: str) -> list[AttributeDescription]:
     ]
 
 
+def select_level() -> str:
+    return st.segmented_control(
+        "Poziom danych",
+        list(LEVEL_NAMES),
+        format_func=LEVEL_NAMES.get,
+        default=MATCH_LEVEL,
+        required=True,
+    )
+
+
+def table_for_level(level: str) -> pd.DataFrame:
+    return get_matches() if level == MATCH_LEVEL else get_teams()
+
+
 def select_numeric_attribute() -> SelectedAttribute:
     selection_columns = st.columns([2, 3], vertical_alignment="bottom")
     with selection_columns[0]:
-        level = st.segmented_control(
-            "Poziom danych",
-            list(LEVEL_NAMES),
-            format_func=LEVEL_NAMES.get,
-            default=MATCH_LEVEL,
-            required=True,
-        )
+        level = select_level()
     attributes = numeric_attributes(level)
     default_index = [attribute.column for attribute in attributes].index(DEFAULT_COLUMNS[level])
     with selection_columns[1]:
@@ -82,9 +90,8 @@ def select_numeric_attribute() -> SelectedAttribute:
             format_func=lambda description: ALL_NAMES[level][description.column],
             key=f"numeric_attribute_{level}",
         )
-    table = get_matches() if level == MATCH_LEVEL else get_teams()
     return SelectedAttribute(
-        table=table,
+        table=table_for_level(level),
         level=level,
         column=attribute.column,
         name=ALL_NAMES[level][attribute.column],
