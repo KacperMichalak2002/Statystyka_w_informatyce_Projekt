@@ -10,8 +10,6 @@ SYMMETRY_LIMIT = 0.1
 SKEWNESS_STRENGTH_NAMES = {0.5: "słaba", 1: "umiarkowana"}
 HIGHEST_SKEWNESS_STRENGTH_NAME = "silna"
 NORMAL_PEAK_LIMIT = 0.1
-CONCENTRATION_LEVEL_NAMES = {0.2: "niska", 0.4: "umiarkowana"}
-HIGHEST_CONCENTRATION_LEVEL_NAME = "wysoka"
 
 
 def central_moment(values: pd.Series, order: int) -> float:
@@ -96,10 +94,3 @@ def shape_description(skewness: float, excess_kurtosis: float) -> str:
     if not (math.isfinite(skewness) and math.isfinite(excess_kurtosis)):
         return "brak (wszystkie wartości są równe)"
     return f"{skewness_description(skewness)}, {peak_description(excess_kurtosis)}"
-
-
-def concentration_level(gini: float) -> str:
-    for upper_limit, level in CONCENTRATION_LEVEL_NAMES.items():
-        if gini < upper_limit:
-            return level
-    return HIGHEST_CONCENTRATION_LEVEL_NAME

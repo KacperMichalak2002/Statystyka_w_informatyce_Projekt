@@ -117,11 +117,6 @@ if pairs.empty:
     st.warning("Wybrane atrybuty mają w tej lidze stałe wartości, więc nie da się policzyć korelacji.")
     st.stop()
 
-
-def pair_name(pair: pd.Series) -> str:
-    return f"{attribute_names[pair['first_column']]} i {attribute_names[pair['second_column']]}"
-
-
 strongest_positive_pair = pairs.loc[pairs["coefficient"].idxmax()]
 strongest_negative_pair = pairs.loc[pairs["coefficient"].idxmin()]
 
@@ -134,10 +129,6 @@ metric_columns[2].metric(
 metric_columns[3].metric(
     "Najsilniejsza ujemna", format_coefficient(strongest_negative_pair["coefficient"]), border=True
 )
-st.caption(
-    f"Najsilniejsza korelacja dodatnia: {pair_name(strongest_positive_pair)}. "
-    f"Najsilniejsza ujemna: {pair_name(strongest_negative_pair)}."
-)
 
 st.subheader(":material/grid_on: Mapa ciepła")
 show_chart(
@@ -146,11 +137,6 @@ show_chart(
         attribute_names,
         f"Korelacja {METHOD_NAMES[method]}: {LEVEL_NAMES[level].lower()}, {league}",
     )
-)
-st.caption(
-    "Każde pole to współczynnik korelacji jednej pary atrybutów: niebieskie oznacza zależność dodatnią, "
-    "pomarańczowe ujemną, a ciemne brak zależności. Dokładną wartość pokazuje najechanie kursorem. "
-    "Puste pole oznacza atrybut o stałej wartości w wybranej lidze."
 )
 
 st.subheader(":material/leaderboard: Najsilniejsze zależności")
@@ -166,11 +152,6 @@ st.dataframe(
         }
     ).style.format(precision=COEFFICIENT_DECIMAL_PLACES, decimal=",", subset=["Współczynnik"]),
     hide_index=True,
-)
-st.caption(
-    "Część najsilniejszych korelacji wynika z budowy atrybutów, na przykład suma meczu zależy od wartości "
-    "gospodarzy i gości, a szanse z kursów sumują się do 1. Przyjęte progi siły dla wartości bezwzględnej: "
-    "poniżej 0,2 bardzo słaba, 0,2-0,4 słaba, 0,4-0,7 umiarkowana, 0,7-0,9 silna, od 0,9 bardzo silna."
 )
 
 st.subheader(":material/scatter_plot: Wybrana para atrybutów")
@@ -215,13 +196,7 @@ pair_metric_columns[3].metric(
     help="Prawdopodobieństwo uzyskania tak silnej korelacji, gdyby atrybuty były niezależne.",
 )
 
-if has_coefficient:
-    st.info(
-        f"Zależność jest {strength_name(coefficient)} i {direction_name(coefficient)}: "
-        f"{attribute_names[first_column]} i {attribute_names[second_column]}.",
-        icon=":material/lightbulb:",
-    )
-else:
+if not has_coefficient:
     st.info("Jeden z atrybutów ma stałą wartość, więc współczynnika nie da się policzyć.", icon=":material/block:")
 
 point_labels = table["home_team"] + " - " + table["away_team"] if level == MATCH_LEVEL else table["team"]
@@ -238,9 +213,4 @@ show_chart(
         attribute_names[first_column],
         attribute_names[second_column],
     )
-)
-st.caption(
-    "Biała linia to prosta regresji wyznaczona metodą najmniejszych kwadratów. Gdy obserwacje się nie "
-    "powtarzają, każdy punkt to jedna obserwacja w kolorze ligi. Gdy wiele obserwacji ma te same wartości, "
-    "wykres pokazuje koła o polu proporcjonalnym do liczby obserwacji."
 )

@@ -1,5 +1,3 @@
-import math
-
 import streamlit as st
 
 from football_stats.charts.descriptive_statistics import league_box_plot, league_measure_chart
@@ -30,15 +28,6 @@ TABLE_COLUMN_NAMES = {
 VALUE_COLUMNS = ["minimum", "maximum", "value_range"]
 MEASURE_COLUMNS = ["variance", "standard_deviation", "first_quartile", "third_quartile", "interquartile_range"]
 COEFFICIENT_OF_VARIATION_DECIMAL_PLACES = 1
-VARIATION_LEVELS = {25: "małe", 45: "przeciętne", 100: "duże"}
-HIGHEST_VARIATION_LEVEL = "bardzo duże"
-
-
-def variation_level(coefficient_of_variation_percentage: float) -> str:
-    for upper_limit, level_name in VARIATION_LEVELS.items():
-        if coefficient_of_variation_percentage < upper_limit:
-            return level_name
-    return HIGHEST_VARIATION_LEVEL
 
 
 page = find_page(__file__)
@@ -76,11 +65,6 @@ metric_columns[2].metric(
 metric_columns[3].metric(
     "Rozstęp międzykwartylowy", format_measure(all_leagues["interquartile_range"]), border=True
 )
-st.caption(
-    f"Wartości dla wszystkich lig razem. Atrybut: {attribute.name}, jednostka: {attribute.unit}. "
-    "Wariancja i odchylenie standardowe są liczone dla całej zbiorowości (dzielnik n), "
-    "bo dane obejmują cały sezon, a nie próbę."
-)
 
 st.subheader(":material/candlestick_chart: Rozrzut w ligach")
 show_chart(
@@ -94,27 +78,6 @@ show_chart(
         show_all_points=attribute.level == TEAM_LEVEL,
     )
 )
-st.caption(
-    "Pudełko obejmuje środkowe 50% obserwacji (od kwartyla 1 do kwartyla 3), linia ciągła w pudełku to "
-    "mediana, a przerywana to średnia z rombem o wysokości odchylenia standardowego. Wąsy sięgają do "
-    "obserwacji odległych najwyżej o 1,5 rozstępu międzykwartylowego od pudełka, a punkty poza nimi to "
-    "wartości odstające."
-)
-
-most_varied_league = league_measures["standard_deviation"].idxmax()
-least_varied_league = league_measures["standard_deviation"].idxmin()
-insight = (
-    f"Największe odchylenie standardowe ma {most_varied_league} "
-    f"({format_measure(league_measures['standard_deviation'].max())}), a najmniejsze {least_varied_league} "
-    f"({format_measure(league_measures['standard_deviation'].min())})."
-)
-if math.isfinite(coefficient_of_variation):
-    insight += (
-        f" Współczynnik zmienności dla wszystkich lig wynosi "
-        f"{format_percentage(coefficient_of_variation, COEFFICIENT_OF_VARIATION_DECIMAL_PLACES)}, "
-        f"co oznacza {variation_level(coefficient_of_variation)} zróżnicowanie."
-    )
-st.info(insight, icon=":material/lightbulb:")
 
 st.subheader(":material/percent: Zmienność względna")
 if has_coefficient_of_variation:
@@ -126,9 +89,6 @@ if has_coefficient_of_variation:
             COEFFICIENT_OF_VARIATION_DECIMAL_PLACES,
             "%",
         )
-    )
-    st.caption(
-        "Przyjęte progi: poniżej 25% zróżnicowanie małe, 25-45% przeciętne, 45-100% duże, powyżej 100% bardzo duże."
     )
 else:
     st.info(

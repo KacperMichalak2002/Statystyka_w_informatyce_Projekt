@@ -67,7 +67,6 @@ metric_columns[0].metric(f"Liczba {attribute.observation_name}", format_number(a
 metric_columns[1].metric("Średnia", format_measure(all_leagues["mean"]), border=True)
 metric_columns[2].metric("Mediana", format_measure(all_leagues["median"]), border=True)
 metric_columns[3].metric("Dominanta", all_leagues["mode_text"], border=True)
-st.caption(f"Wartości dla wszystkich lig razem. Atrybut: {attribute.name}, jednostka: {attribute.unit}.")
 
 st.subheader(":material/apps: Ligi na piktogramie")
 pictogram_measure = st.segmented_control(
@@ -84,21 +83,7 @@ pictogram_value_texts = (
 icon = icon_for_column(attribute.column)
 pictogram, icon_value = pictogram_html(league_measures[pictogram_measure], pictogram_value_texts, icon)
 st.html(pictogram)
-pictogram_notes = [pictogram_legend(icon, icon_value, attribute.unit)]
-if pictogram_measure == "mode":
-    pictogram_notes.append("Gdy liga ma kilka dominant, ikony pokazują najmniejszą z nich.")
-if (league_measures[pictogram_measure] <= 0).any():
-    pictogram_notes.append("Wartości zerowe i ujemne nie mają ikon.")
-st.caption(" ".join(pictogram_notes))
-
-highest_mean_league = league_measures["mean"].idxmax()
-lowest_mean_league = league_measures["mean"].idxmin()
-st.info(
-    f"Najwyższą średnią ma {highest_mean_league} ({format_measure(league_measures['mean'].max())}), "
-    f"a najniższą {lowest_mean_league} ({format_measure(league_measures['mean'].min())}). "
-    f"Połowa obserwacji ze wszystkich lig nie przekracza mediany {format_measure(all_leagues['median'])}.",
-    icon=":material/lightbulb:",
-)
+st.caption(pictogram_legend(icon, icon_value, attribute.unit))
 
 st.subheader(":material/bar_chart: Miary na tle rozkładu")
 distribution_league = st.segmented_control(
@@ -146,13 +131,6 @@ show_chart(
         f"Liczba {attribute.observation_name}",
     )
 )
-if attribute.is_continuous:
-    st.caption(
-        "Atrybut ciągły rzadko powtarza dokładnie tę samą wartość, dlatego jego dominanta jest interpolowana "
-        "z najliczniejszego przedziału szeregu rozdzielczego. Liczbę przedziałów wyznacza reguła Sturgesa."
-    )
-else:
-    st.caption("Słupki pokazują, ile razy wystąpiła każda wartość. Dominanta to wartość z najwyższym słupkiem.")
 
 st.subheader(":material/table_chart: Miary w liczbach")
 st.dataframe(
@@ -165,11 +143,4 @@ st.dataframe(
         },
     ),
     hide_index=True,
-)
-st.caption(
-    "Liczebność dominanty to liczba obserwacji z wartością dominanty, a dla atrybutów ciągłych "
-    "liczba obserwacji w przedziale dominanty. Słowo „brak” oznacza, że żadna wartość się nie powtarza. "
-    "Kwartyle są liczone metodą liniową: pozycja kwartyla to 1 + p(n - 1) w uporządkowanym szeregu "
-    "(numerując od 1), "
-    "a wartość między sąsiednimi obserwacjami jest interpolowana."
 )
