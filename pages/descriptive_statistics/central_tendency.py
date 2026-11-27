@@ -11,7 +11,7 @@ from football_stats.interface.navigation import find_page
 from football_stats.interface.page_elements import show_chart
 from football_stats.interface.pictograms import icon_for_column, pictogram_html, pictogram_legend
 from football_stats.interface.statistics_tables import measure_table
-from football_stats.interface.theme import ACCENT_COLOR, AWAY_WIN_COLOR, TEXT_COLOR
+from football_stats.interface.theme import ACCENT_COLOR, AWAY_WIN_COLOR, MUTED_TEXT_COLOR, TEXT_COLOR
 from football_stats.statistics.central_tendency import central_tendency_measures
 from football_stats.statistics.league_groups import measures_by_league
 
@@ -20,7 +20,10 @@ MEASURE_NAMES = {"mean": "Średnia", "median": "Mediana", "mode": "Dominanta"}
 TABLE_COLUMN_NAMES = {
     "count": "Liczba obserwacji",
     "mean": "Średnia",
+    "trimmed_mean": "Średnia ucinana 10%",
     "median": "Mediana",
+    "first_quartile": "Kwartyl 1",
+    "third_quartile": "Kwartyl 3",
     "mode_text": "Dominanta",
     "mode_count": "Liczebność dominanty",
 }
@@ -30,7 +33,9 @@ st.title(f"{page.icon} {page.title}")
 st.markdown(
     "Miary tendencji centralnej wskazują wartość typową dla atrybutu: **średnia** to suma wartości "
     "podzielona przez ich liczbę, **mediana** dzieli uporządkowane obserwacje na dwie równe połowy, "
-    "a **dominanta** to wartość występująca najczęściej."
+    "a **dominanta** to wartość występująca najczęściej. **Kwartyl 1** i **kwartyl 3** odcinają odpowiednio "
+    "25% najmniejszych i 25% największych obserwacji, a **średnia ucinana 10%** pomija po 10% obserwacji "
+    "z obu końców, więc wartości odstające mniej na nią wpływają."
 )
 
 attribute = select_numeric_attribute()
@@ -117,6 +122,18 @@ measure_lines = [
         MeasureLine(f"Dominanta: {format_number(mode, mode_decimal_places)}", mode, TEXT_COLOR, "dot")
         for mode in selected_measures["modes"]
     ],
+    MeasureLine(
+        f"Kwartyl 1: {format_measure(selected_measures['first_quartile'])}",
+        selected_measures["first_quartile"],
+        MUTED_TEXT_COLOR,
+        "dashdot",
+    ),
+    MeasureLine(
+        f"Kwartyl 3: {format_measure(selected_measures['third_quartile'])}",
+        selected_measures["third_quartile"],
+        MUTED_TEXT_COLOR,
+        "dashdot",
+    ),
 ]
 show_chart(
     distribution_chart(
@@ -142,11 +159,17 @@ st.dataframe(
     measure_table(
         measures,
         TABLE_COLUMN_NAMES,
-        {"mean": attribute.measure_decimal_places, "median": attribute.measure_decimal_places},
+        {
+            column: attribute.measure_decimal_places
+            for column in ["mean", "trimmed_mean", "median", "first_quartile", "third_quartile"]
+        },
     ),
     hide_index=True,
 )
 st.caption(
     "Liczebność dominanty to liczba obserwacji z wartością dominanty, a dla atrybutów ciągłych "
-    "liczba obserwacji w przedziale dominanty. Słowo „brak” oznacza, że żadna wartość się nie powtarza."
+    "liczba obserwacji w przedziale dominanty. Słowo „brak” oznacza, że żadna wartość się nie powtarza. "
+    "Kwartyle są liczone metodą liniową: pozycja kwartyla to 1 + p(n - 1) w uporządkowanym szeregu "
+    "(numerując od 1), "
+    "a wartość między sąsiednimi obserwacjami jest interpolowana."
 )

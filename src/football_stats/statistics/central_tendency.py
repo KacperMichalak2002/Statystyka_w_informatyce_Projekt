@@ -2,6 +2,9 @@ import math
 
 import numpy as np
 import pandas as pd
+from scipy import stats
+
+TRIMMED_SHARE = 0.1
 
 
 def most_frequent_values(values: pd.Series) -> tuple[list[float], int]:
@@ -41,7 +44,10 @@ def central_tendency_measures(values: pd.Series, is_continuous: bool) -> dict:
     return {
         "count": len(values),
         "mean": values.mean(),
+        "trimmed_mean": stats.trim_mean(values, TRIMMED_SHARE),
         "median": values.median(),
+        "first_quartile": values.quantile(0.25),
+        "third_quartile": values.quantile(0.75),
         "modes": modes,
         "mode_count": mode_count,
     }

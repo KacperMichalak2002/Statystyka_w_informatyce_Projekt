@@ -18,6 +18,8 @@ from football_stats.interface.data_tables import decimal_places
 LEVEL_NAMES = {MATCH_LEVEL: "Mecze", TEAM_LEVEL: "Drużyny"}
 OBSERVATION_NAMES = {MATCH_LEVEL: "meczów", TEAM_LEVEL: "drużyn"}
 DEFAULT_COLUMNS = {MATCH_LEVEL: "total_goals", TEAM_LEVEL: "points"}
+DEFAULT_PER_MATCH_TEAM_COLUMN = "points_per_match"
+PER_MATCH_TEAM_COLUMN_ENDINGS = ("_per_match", "_percentage")
 NUMERIC_VARIABLE_TYPES = {DISCRETE, CONTINUOUS}
 MINIMUM_MEASURE_DECIMAL_PLACES = 2
 
@@ -54,12 +56,24 @@ class SelectedAttribute:
         return max(self.value_decimal_places, MINIMUM_MEASURE_DECIMAL_PLACES)
 
 
-def numeric_attributes(level: str) -> list[AttributeDescription]:
+def numeric_attributes(level: str, per_match_team_attributes_only: bool = False) -> list[AttributeDescription]:
     return [
         description
         for description in all_descriptions()
-        if description.level == level and description.variable_type in NUMERIC_VARIABLE_TYPES
+        if description.level == level
+        and description.variable_type in NUMERIC_VARIABLE_TYPES
+        and (
+            level != TEAM_LEVEL
+            or not per_match_team_attributes_only
+            or description.column.endswith(PER_MATCH_TEAM_COLUMN_ENDINGS)
+        )
     ]
+
+
+def default_column(level: str, per_match_team_attributes_only: bool) -> str:
+    if level == TEAM_LEVEL and per_match_team_attributes_only:
+        return DEFAULT_PER_MATCH_TEAM_COLUMN
+    return DEFAULT_COLUMNS[level]
 
 
 def select_level() -> str:
@@ -76,19 +90,21 @@ def table_for_level(level: str) -> pd.DataFrame:
     return get_matches() if level == MATCH_LEVEL else get_teams()
 
 
-def select_numeric_attribute() -> SelectedAttribute:
+def select_numeric_attribute(per_match_team_attributes_only: bool = False) -> SelectedAttribute:
     selection_columns = st.columns([2, 3], vertical_alignment="bottom")
     with selection_columns[0]:
         level = select_level()
-    attributes = numeric_attributes(level)
-    default_index = [attribute.column for attribute in attributes].index(DEFAULT_COLUMNS[level])
+    attributes = numeric_attributes(level, per_match_team_attributes_only)
+    default_index = [attribute.column for attribute in attributes].index(
+        default_column(level, per_match_team_attributes_only)
+    )
     with selection_columns[1]:
         attribute = st.selectbox(
             "Atrybut",
             attributes,
             index=default_index,
             format_func=lambda description: ALL_NAMES[level][description.column],
-            key=f"numeric_attribute_{level}",
+            key=f"numeric_attribute_{level}_{per_match_team_attributes_only}",
         )
     return SelectedAttribute(
         table=table_for_level(level),
